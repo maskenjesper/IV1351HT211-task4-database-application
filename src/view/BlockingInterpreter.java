@@ -52,6 +52,8 @@ public class BlockingInterpreter {
                         System.out.println("quit: Quits the application.");
                         System.out.println("list <kind>: Shows list of instruments of specified kind that are available to rent.");
                         System.out.println("rent <studentID> <instrumentID>: Creates a one month rental for the specified student and instrument.");
+                        System.out.println("rentals <studentID>: Shows the rentals for specified student.");
+                        System.out.println("terminate <rentalID>: Terminates the rental specified by rental by changing it's end_time to now().");
                         break;
                     case QUIT:
                         keepReceivingCmds = false;
