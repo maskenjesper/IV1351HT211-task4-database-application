@@ -4,8 +4,8 @@ import integration.SchoolDAO;
 import integration.SchoolDBException;
 import model.InstrumentDTO;
 import model.InstrumentException;
+import model.RentException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -19,7 +19,15 @@ public class Controller {
         try {
             return schoolDB.listAvailableInstrumentsByKind(kind);
         } catch (Exception e) {
-            throw new InstrumentException("Could not search for instruments", e);
+            throw new InstrumentException("Could not search for instruments.", e);
+        }
+    }
+
+    public void rentInstrument(String userID, String instrumentID) throws RentException {
+        try {
+            schoolDB.rentInstrumentByIDWithUserID(userID, instrumentID);
+        } catch (Exception e) {
+            throw new RentException("Rental could not be performed.", e);
         }
     }
 }

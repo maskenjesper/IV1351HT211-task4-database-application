@@ -5,6 +5,7 @@ import java.util.Scanner;
 import controller.Controller;
 import model.InstrumentDTO;
 import model.InstrumentException;
+import model.RentException;
 
 /**
  * Reads and interprets user commands. This command interpreter is blocking, the user
@@ -39,6 +40,8 @@ public class BlockingInterpreter {
      */
     public void handleCmds() {
         keepReceivingCmds = true;
+        System.out.println("\nWelcome to Soundgood music schools rental service!");
+        System.out.println("Type help for a list of commands.");
         while (keepReceivingCmds) {
             try {
                 CmdLine cmdLine = new CmdLine(readNextLine());
@@ -47,6 +50,7 @@ public class BlockingInterpreter {
                         System.out.println("help: Shows commands and what they do.");
                         System.out.println("quit: Quits the application.");
                         System.out.println("list <kind>: Shows list of instruments of specified kind that are available to rent.");
+                        System.out.println("rent <studentID> <instrumentID>: Creates a one month rental for the specified student and instrument.");
                         break;
                     case QUIT:
                         keepReceivingCmds = false;
@@ -62,7 +66,15 @@ public class BlockingInterpreter {
                                     System.out.println(instrument);
                             }
                         } catch (InstrumentException ie) {
-                            ie.printStackTrace();
+                            System.out.println("Instruments could not be listed.");
+                        }
+                        break;
+                    case RENT:
+                        try {
+                            ctrl.rentInstrument(cmdLine.getParameter(0), cmdLine.getParameter(1));
+                            System.out.println("A rental has been created successfully!");
+                        } catch (RentException re) {
+                            System.out.println("The instrument could not be rented.");
                         }
                         break;
                     default:
