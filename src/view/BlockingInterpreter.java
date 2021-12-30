@@ -6,6 +6,7 @@ import controller.Controller;
 import model.InstrumentDTO;
 import model.InstrumentException;
 import model.RentException;
+import model.RentalDTO;
 
 /**
  * Reads and interprets user commands. This command interpreter is blocking, the user
@@ -76,6 +77,30 @@ public class BlockingInterpreter {
                         } catch (RentException re) {
                             System.out.println("The instrument could not be rented.");
                         }
+                        break;
+                    case RENTALS:
+                        try {
+                            List<RentalDTO> rentals = ctrl.getRentalsForStudent(cmdLine.getParameter(0));
+                            if (rentals.size() == 0)
+                                System.out.println("There are no rentals for this student.");
+                            else {
+                                System.out.println("Rentals for this student:");
+                                for (RentalDTO rental: rentals)
+                                    System.out.println("Rental ID: " + rental.getRentalID() + " | Instrument ID: " + rental.getInstrumentID() +
+                                            " | Start time: " + rental.getStartTime() + " | End time: " + rental.getEndTime());
+                            }
+                        } catch (RentException re) {
+                            System.out.println("Could not acquire the rentals.");
+                        }
+                        break;
+                    case TERMINATE:
+                        try {
+                            ctrl.terminateRentalByID(cmdLine.getParameter(0));
+                            System.out.println("Rental has been terminated.");
+                        } catch (RentException re) {
+                            System.out.println("Could not perform termination.");
+                        }
+
                         break;
                     default:
                         System.out.println("illegal command");
