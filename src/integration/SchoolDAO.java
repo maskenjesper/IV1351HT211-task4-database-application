@@ -39,7 +39,6 @@ public class SchoolDAO {
         String failureMsg = "Could not terminate rental.";
         ResultSet result = null;
         try {
-            // TODO: Check that rental isn't already terminated.
             getRentalByIDStmt.setInt(1, Integer.parseInt(rentalID));
             result = getRentalByIDStmt.executeQuery();
             result.next();
@@ -149,9 +148,9 @@ public class SchoolDAO {
             getPriceOfInstrumentByIDStmt.setInt(1, Integer.parseInt(instrumentID));
             result = getPriceOfInstrumentByIDStmt.executeQuery();
             if(!result.next()){
-                return;
-                // throw error (the instrument was not found)
+                throw new RentException(studentID,instrumentID," Requested instrument was not found");
             }
+            
             int price = result.getInt("price");
             rentInstrumentByIdWithStudentIDStmt.setInt(1, Integer.parseInt(studentID));
             rentInstrumentByIdWithStudentIDStmt.setInt(2, Integer.parseInt(instrumentID));
