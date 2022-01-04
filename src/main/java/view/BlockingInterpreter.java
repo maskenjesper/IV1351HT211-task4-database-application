@@ -56,7 +56,7 @@ public class BlockingInterpreter {
                         System.out.println("terminate <rentalID>: Terminates the rental specified by rental by changing it's end_time to now().");
                         break;
                     case QUIT:
-                        keepReceivingCmds = false;
+                        stop();
                         break;
                     case LIST:
                         try {
@@ -100,7 +100,10 @@ public class BlockingInterpreter {
                             ctrl.terminateRentalByID(cmdLine.getParameter(0));
                             System.out.println("Rental has been terminated.");
                         } catch (RentalException re) {
-                            System.out.println("Could not perform termination.");
+                            if (re.getCause() instanceof RentalException)
+                                System.out.println("This rental is already terminated. No changes were made");
+                            else
+                                System.out.println("Could not perform termination.");
                         }
 
                         break;

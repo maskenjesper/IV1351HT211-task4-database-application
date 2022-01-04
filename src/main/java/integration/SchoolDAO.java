@@ -21,7 +21,8 @@ public class SchoolDAO {
     private PreparedStatement getRentalsByStudentIDStmt;
     private PreparedStatement getRentalByIDStmt;
     private PreparedStatement getInstrumentByIDStmt;
-    private PreparedStatement isInstrumentRentedStmt;
+    private PreparedStatement rentalIsTerminatedStmt;
+    private PreparedStatement instrumentIsRentedStmt;
     private PreparedStatement getNrOfActiveStudentRentalsByIDStmt;
     private PreparedStatement getAllActiveRentalsStmt;
     private PreparedStatement getAllStudentIDsStmt;
@@ -35,7 +36,7 @@ public class SchoolDAO {
         }
     }
 
-    public void terminateRentalByID(String rentalID) throws SchoolDBException {
+    public void terminateRentalByID(String rentalID) throws SchoolDBException, RentalException {
         String failureMsg = "Could not terminate rental.";
         ResultSet result = null;
         try {
@@ -43,15 +44,15 @@ public class SchoolDAO {
             result = getRentalByIDStmt.executeQuery();
             result.next();
             int instrumentID = result.getInt("instrument_id");
-            if(instrumentIsRented(String.valueOf(instrumentID))){
+            if(!rentalIsTerminated(rentalID)) {
                 terminateRentalByIDStmt.setInt(1, Integer.parseInt(rentalID));
                 terminateRentalByIDStmt.executeUpdate();
-
                 unmarkInstrumentAsRentedByIDStmt.setInt(1, instrumentID);
                 unmarkInstrumentAsRentedByIDStmt.executeUpdate();
-
                 connection.commit();
             }
+            else
+                throw new RentalException("Rental was already terminated.");
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         } finally {
@@ -188,13 +189,31 @@ public class SchoolDAO {
         }
     }
 
+    public boolean rentalIsTerminated(String rentalID) throws SchoolDBException {
+        String failureMsg = "Could not check if rentals is terminated.";
+        ResultSet result = null;
+        boolean isTerminated = false;
+        try {
+            rentalIsTerminatedStmt.setInt(1,Integer.parseInt(rentalID));
+            result = rentalIsTerminatedStmt.executeQuery();
+            if(result.next()){
+                isTerminated = result.getBoolean(1);
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        } finally {
+            closeResultSet(failureMsg, result);
+            return isTerminated;
+        }
+    }
+
     public boolean instrumentIsRented(String instrumentID) throws SchoolDBException {
-        String failureMsg = "Could not rent the specified instrument.";
+        String failureMsg = "Could not check if instrument is rented.";
         ResultSet result = null;
         boolean isRented = false;
         try {
-            isInstrumentRentedStmt.setInt(1,Integer.parseInt(instrumentID));
-            result = isInstrumentRentedStmt.executeQuery();
+            instrumentIsRentedStmt.setInt(1,Integer.parseInt(instrumentID));
+            result = instrumentIsRentedStmt.executeQuery();
             if(result.next()){
                 isRented = result.getBoolean(1);
             }
@@ -259,10 +278,14 @@ public class SchoolDAO {
 
         );
         getNrOfActiveStudentRentalsByIDStmt = connection.prepareStatement(
-                "select count(*) from rental join instrument i on i.instrument_id = rental.instrument_id where student_id=? and is_rented=true"
+                "select count(*) from rental WHERE end_time > now() AND student_id = ?"
         );
 
-        isInstrumentRentedStmt = connection.prepareStatement(
+        rentalIsTerminatedStmt = connection.prepareStatement(
+                "select count(*) > 0 from rental where rental_id = ? AND end_time < now()"
+        );
+
+        instrumentIsRentedStmt = connection.prepareStatement(
                 "select count(instrument_id) > 0 from instrument where instrument_id = ? AND is_rented = true;"
         );
 
