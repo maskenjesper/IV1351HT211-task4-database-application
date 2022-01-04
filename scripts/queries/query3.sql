@@ -11,12 +11,3 @@ FROM (SELECT *
 GROUP BY instructor_id
 HAVING COUNT(instructor_id) >= 2
 ORDER BY count DESC
-
-/***********************************************************************************/
-
-SELECT COUNT(instructor_id), instructor_id
-FROM (SELECT * 
-	  FROM music_lesson 
-	  WHERE extract(month FROM appointed_time) = 1 AND extract(year FROM appointed_time) = 2021) as t
-GROUP BY instructor_id
-ORDER BY count DESC
