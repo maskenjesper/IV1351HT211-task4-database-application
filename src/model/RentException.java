@@ -14,4 +14,9 @@ public class RentException extends Exception {
     public RentException(String reason, Throwable rootCause) {
         super(reason, rootCause);
     }
+
+
+    public RentException(String studentId, String instrumentId, String reason) {
+        super(String.format("Student [%s] failed to rent instrument [%s] because of : %s",studentId,instrumentId,reason));
+    }
 }

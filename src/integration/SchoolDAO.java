@@ -2,6 +2,7 @@ package integration;
 
 
 import model.InstrumentDTO;
+import model.RentException;
 import model.RentalDTO;
 
 import java.sql.*;
@@ -125,24 +126,23 @@ public class SchoolDAO {
         }
     }
 
-    public void rentInstrumentByIDWithStudentID(String studentID, String instrumentID) throws SchoolDBException {
+    public void rentInstrumentByIDWithStudentID(String studentID, String instrumentID) throws SchoolDBException, RentException {
         String failureMsg = "Could not rent the specified instrument.";
         ResultSet result = null;
         try {
             // TODO:
             //  [x] Check 2 rentals per student limit.
             //  [] throw error
-            if(nrOfActiveStudentRentals(studentID) >= 2){
-                return;
-                // throw error, this student has to many rentals
+            int nrOfRentals = nrOfActiveStudentRentals(studentID);
+            if(nrOfRentals >= 2){
+                throw new RentException(studentID,instrumentID, " Student has too many active rentals");
             }
 
             // TODO:
             //  [x] Check if instrument with <instrumentID> is available
             //  [] throw error
             if(instrumentIsRented(instrumentID)){
-                return;
-                // throw error, instrument is already rented
+                throw new RentException(studentID,instrumentID," Instrument is not available for rental");
             }
 
 
