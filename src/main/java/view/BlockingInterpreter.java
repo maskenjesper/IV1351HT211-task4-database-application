@@ -5,7 +5,7 @@ import java.util.Scanner;
 import controller.Controller;
 import model.InstrumentDTO;
 import model.InstrumentException;
-import model.RentException;
+import model.RentalException;
 import model.RentalDTO;
 
 /**
@@ -76,7 +76,7 @@ public class BlockingInterpreter {
                         try {
                             ctrl.rentInstrument(cmdLine.getParameter(0), cmdLine.getParameter(1));
                             System.out.println("A rental has been created successfully!");
-                        } catch (RentException re) {
+                        } catch (RentalException re) {
                             System.out.println("The instrument could not be rented.");
                         }
                         break;
@@ -91,7 +91,7 @@ public class BlockingInterpreter {
                                     System.out.println("Rental ID: " + rental.getRentalID() + " | Instrument ID: " + rental.getInstrumentID() +
                                             " | Start time: " + rental.getStartTime() + " | End time: " + rental.getEndTime());
                             }
-                        } catch (RentException re) {
+                        } catch (RentalException re) {
                             System.out.println("Could not acquire the rentals.");
                         }
                         break;
@@ -99,7 +99,7 @@ public class BlockingInterpreter {
                         try {
                             ctrl.terminateRentalByID(cmdLine.getParameter(0));
                             System.out.println("Rental has been terminated.");
-                        } catch (RentException re) {
+                        } catch (RentalException re) {
                             System.out.println("Could not perform termination.");
                         }
 

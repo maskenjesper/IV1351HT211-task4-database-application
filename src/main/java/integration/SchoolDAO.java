@@ -2,7 +2,7 @@ package integration;
 
 
 import model.InstrumentDTO;
-import model.RentException;
+import model.RentalException;
 import model.RentalDTO;
 
 import java.sql.*;
@@ -125,7 +125,7 @@ public class SchoolDAO {
         }
     }
 
-    public void rentInstrumentByIDWithStudentID(String studentID, String instrumentID) throws SchoolDBException, RentException {
+    public void rentInstrumentByIDWithStudentID(String studentID, String instrumentID) throws SchoolDBException, RentalException {
         String failureMsg = "Could not rent the specified instrument.";
         ResultSet result = null;
         try {
@@ -134,21 +134,21 @@ public class SchoolDAO {
             //  [] throw error
             int nrOfRentals = nrOfActiveStudentRentals(studentID);
             if(nrOfRentals >= 2){
-                throw new RentException(studentID,instrumentID, " Student has too many active rentals");
+                throw new RentalException(studentID,instrumentID, " Student has too many active rentals");
             }
 
             // TODO:
             //  [x] Check if instrument with <instrumentID> is available
             //  [] throw error
             if(instrumentIsRented(instrumentID)){
-                throw new RentException(studentID,instrumentID," Instrument is not available for rental");
+                throw new RentalException(studentID,instrumentID," Instrument is not available for rental");
             }
 
 
             getPriceOfInstrumentByIDStmt.setInt(1, Integer.parseInt(instrumentID));
             result = getPriceOfInstrumentByIDStmt.executeQuery();
             if(!result.next()){
-                throw new RentException(studentID,instrumentID," Requested instrument was not found");
+                throw new RentalException(studentID,instrumentID," Requested instrument was not found");
             }
 
             int price = result.getInt("price");
@@ -315,7 +315,7 @@ public class SchoolDAO {
 
     private void connectToSchoolDB() throws SQLException {
         connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/music_school", "postgres",
-                "3ge4wujj");
+                "60d5m4ck");
         connection.setAutoCommit(false);
     }
 

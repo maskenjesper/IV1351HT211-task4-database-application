@@ -1,7 +1,7 @@
 package model;
 
-public class RentException extends Exception {
-    public RentException(String reason) {
+public class RentalException extends Exception {
+    public RentalException(String reason) {
         super(reason);
     }
 
@@ -11,12 +11,12 @@ public class RentException extends Exception {
      * @param reason    Why the exception was thrown.
      * @param rootCause The exception that caused this exception to be thrown.
      */
-    public RentException(String reason, Throwable rootCause) {
+    public RentalException(String reason, Throwable rootCause) {
         super(reason, rootCause);
     }
 
 
-    public RentException(String studentId, String instrumentId, String reason) {
+    public RentalException(String studentId, String instrumentId, String reason) {
         super(String.format("Student [%s] failed to rent instrument [%s] because of : %s",studentId,instrumentId,reason));
     }
 }
