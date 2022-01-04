@@ -150,7 +150,7 @@ public class SchoolDAO {
             if(!result.next()){
                 throw new RentException(studentID,instrumentID," Requested instrument was not found");
             }
-            
+
             int price = result.getInt("price");
             rentInstrumentByIdWithStudentIDStmt.setInt(1, Integer.parseInt(studentID));
             rentInstrumentByIdWithStudentIDStmt.setInt(2, Integer.parseInt(instrumentID));
