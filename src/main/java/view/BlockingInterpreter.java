@@ -66,7 +66,8 @@ public class BlockingInterpreter {
                             else {
                                 System.out.println("Available instruments:");
                                 for (InstrumentDTO instrument : instruments)
-                                    System.out.println(instrument);
+                                    System.out.println("ID: " + instrument.getInstrumentID() + " | type: " + instrument.getType() + " | brand: "
+                                            + instrument.getBrand() + " | SN: " + instrument.getSn() + " | price: " + instrument.getPrice());
                             }
                         } catch (InstrumentException ie) {
                             System.out.println("Instruments could not be listed.");

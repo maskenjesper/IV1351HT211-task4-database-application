@@ -15,6 +15,26 @@ public class InstrumentDTO {
         this.price = price;
     }
 
+    public String getInstrumentID() {
+        return instrumentID;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getSn() {
+        return sn;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
     @Override
     public String toString() {
         return "ID: " + instrumentID + " | type: " + type + " | brand: " + brand + " | SN: " + sn + " | price: " + price;
