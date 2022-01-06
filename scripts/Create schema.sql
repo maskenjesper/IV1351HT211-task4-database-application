@@ -6,11 +6,11 @@ create table address
     address_id       serial
         constraint address_pkey
             primary key,
-    country          varchar(100),
-    city             varchar(100),
-    street           varchar(100),
-    street_number    integer,
-    zip              char(10),
+    country          varchar(100) not null,
+    city             varchar(100) not null,
+    street           varchar(100) not null,
+    street_number    integer not null,
+    zip              char(10) not null,
     apartment_number varchar(100)
 );
 
@@ -19,10 +19,10 @@ create table person
     person_id serial
         constraint person_pkey
             primary key,
-    pnr       char(12) unique,
-    name      varchar(100),
-    age       integer,
-    person_type      person_type
+    pnr       char(12) unique not null,
+    name      varchar(100) not null,
+    age       integer not null,
+    person_type      person_type not null
 );
 
 create table address_person
@@ -33,7 +33,7 @@ create table address_person
         constraint address_person_person_id_fkey
             references person
             on delete cascade,
-    address_id integer
+    address_id integer not null
         constraint address_person_address_id_fkey
             references address
             on delete set null
@@ -44,8 +44,8 @@ create table contact_details
     contact_details_id serial
         constraint contact_details_pkey
             primary key,
-    phone              char(10),
-    email              varchar(100)
+    phone              char(10) not null,
+    email              varchar(100) not null
 );
 
 create table instructor
@@ -53,15 +53,15 @@ create table instructor
     instructor_id       serial
         constraint instructor_pkey
             primary key,
-    person_id           integer
+    person_id           integer unique not null
         constraint instructor_person_id_fkey
             references person
             on delete cascade,
-    contact_details_id  integer
+    contact_details_id  integer unique not null
         constraint instructor_contact_details_id_fkey
             references contact_details
             on delete set null,
-    can_teach_ensambles boolean
+    can_teach_ensambles boolean not null
 );
 
 create table instrument_taught
@@ -80,8 +80,8 @@ create table timeslot
     timeslot_id     serial
         constraint timeslot_pkey
             primary key,
-    start_time      timestamp,
-    end_time        timestamp,
+    start_time      timestamp not null,
+    end_time        timestamp not null,
     instrument_type varchar(100)
 );
 
@@ -104,19 +104,19 @@ create table student
     student_id      serial
         constraint student_pkey
             primary key,
-    person_id       integer
+    person_id       integer unique not null
         constraint student_person_id_fkey
             references person
             on delete cascade,
-    contact_details integer
+    contact_details integer unique not null
         constraint student_contact_details_fkey
             references contact_details
             on delete set null,
-    parent_contact  integer
+    parent_contact  integer not null
         constraint student_parent_contact_fkey
             references contact_details
             on delete set null,
-    parent_id       integer not null
+    parent_id       integer
         constraint student_person_person_id_fk
             references person
             on delete set null
@@ -141,11 +141,11 @@ create table instrument
     instrument_id serial
         constraint instrument_pkey
             primary key,
-    type          varchar(100),
-    is_rented     boolean,
-    brand         varchar(100),
-    sn            varchar(100),
-    price         integer
+    type          varchar(100) not null,
+    is_rented     boolean not null,
+    brand         varchar(100) not null,
+    sn            varchar(100) unique not null,
+    price         integer not null
 );
 
 create table rental
@@ -153,18 +153,18 @@ create table rental
     rental_id     serial
         constraint rental_pkey
             primary key,
-    student_id    integer
+    student_id    integer not null
         constraint rental_student_id_fkey
             references student
             on delete cascade,
-    instrument_id integer
+    instrument_id integer not null
         constraint rental_instrument_id_fkey
             references instrument
             on delete cascade,
-    start_time    timestamp,
-    end_time      timestamp,
+    start_time    timestamp not null,
+    end_time      timestamp not null,
     with_delivery boolean,
-    price         integer
+    price         integer not null
 );
 
 create table skill
@@ -172,8 +172,8 @@ create table skill
     skill_id        serial
         constraint skill_pkey
             primary key,
-    instrument_type varchar(100),
-    level           integer
+    instrument_type varchar(100) not null,
+    level           integer not null
 );
 
 create table student_skill
@@ -199,9 +199,9 @@ create table music_lesson
         constraint music_lesson_instructor_id_fkey
             references instructor
             on delete set null,
-    executed        boolean,
-    lesson_type     lesson_type,
-    appointed_time  timestamp
+    executed        boolean not null,
+    lesson_type     lesson_type not null,
+    appointed_time  timestamp not null
 );
 
 create table student_music_lesson
@@ -226,13 +226,13 @@ create table group_lesson
         constraint group_lesson_music_lesson_id_fkey
             references music_lesson
             on delete cascade,
-    skill_id        integer
+    skill_id        integer not null
         constraint group_lesson_skill_id_fkey
             references skill
             on delete set null,
-    min             integer,
-    max             integer,
-    instrument      varchar(100)
+    min             integer not null,
+    max             integer not null,
+    instrument      varchar(100) not null
 );
 
 create table individual_lesson
@@ -243,7 +243,7 @@ create table individual_lesson
         constraint individual_lesson_music_lesson_id_fkey
             references music_lesson
             on delete cascade,
-    skill_id        integer
+    skill_id        integer not null
         constraint individual_lesson_skill_id_fkey
             references skill
             on delete set null,
@@ -258,9 +258,9 @@ create table ensamble
         constraint ensamble_music_lesson_id_fkey
             references music_lesson
             on delete cascade,
-    target_genre    varchar(100),
-    min             integer,
-    max             integer
+    target_genre    varchar(100) not null,
+    min             integer not null,
+    max             integer not null
 );
 
 create table lesson_price_scheme
