@@ -8,13 +8,13 @@ ALTER SEQUENCE student_student_id_seq RESTART WITH 1;
 ALTER SEQUENCE skill_skill_id_seq RESTART WITH 1;
 
 /*Populate lesson_price_schema */;
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (1, 1, 300);
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (1, 2, 400);
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (1, 3, 500);
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (2, 1, 400);
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (2, 2, 500);
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (2, 3, 600);
-INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES (3, 1, 500);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('individual_lesson', 1, 300);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('individual_lesson', 2, 400);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('individual_lesson', 3, 500);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('group_lesson', 1, 400);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('group_lesson', 2, 500);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('group_lesson', 3, 600);
+INSERT INTO public.lesson_price_scheme (lesson_type, skill_level, value) VALUES ('ensamble', 1, 500);
 
 /*Populate instrument */
 INSERT INTO instrument (type,is_rented,brand,sn,price) VALUES ('Xylophone','FALSE','unknown','9f3cbb84-a437-4600-8b85-5a293c7e65fd',500);

@@ -265,7 +265,7 @@ CREATE TABLE ensamble
 
 CREATE TABLE lesson_price_scheme
 (
-    lesson_type INTEGER,
+    lesson_type lesson_type,
     skill_level INTEGER,
     value       INTEGER NOT NULL,
     CONSTRAINT lesson_price_scheme_pk
