@@ -22,7 +22,7 @@ executed_lessons_joined AS (
 	ORDER BY executed_lessons.music_lesson_id
 )
 
-SELECT executed_lessons_joined.*, value
+SELECT executed_lessons_joined.*, value AS price
 FROM executed_lessons_joined
 LEFT JOIN lesson_price_scheme ON
 (executed_lessons_joined.lesson_type = lesson_price_scheme.lesson_type AND executed_lessons_joined.level = lesson_price_scheme.skill_level)
