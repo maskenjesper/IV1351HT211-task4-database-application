@@ -7,7 +7,7 @@
 SELECT COUNT(instructor_id), instructor_id
 FROM (SELECT * 
 	  FROM music_lesson 
-	  WHERE extract(month FROM appointed_time) = 1 AND extract(year FROM appointed_time) = 2021) as t
+	  WHERE extract(month FROM appointed_time) = extract(month FROM now())  AND extract(year FROM appointed_time) = extract(year FROM now())) as t
 GROUP BY instructor_id
 HAVING COUNT(instructor_id) >= 2
 ORDER BY count DESC
