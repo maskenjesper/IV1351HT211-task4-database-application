@@ -4,15 +4,15 @@ CREATE TABLE music_lesson (
 	music_lesson_id integer
 		CONSTRAINT music_lesson_pkey
 			PRIMARY KEY,
-	instructor_id integer,
-	price integer,
-	appointed_time timestamp,
+	instructor_id integer NOT NULL,
+	price integer NOT NULL,
+	appointed_time timestamp NOT NULL,
 	level integer,
 	instrument_type varchar(100),
 	max integer,
 	min integer,
 	target_genre varchar(100),
-	lesson_type lesson_type
+	lesson_type lesson_type NOT NULL
 );
 
 CREATE TABLE student (
