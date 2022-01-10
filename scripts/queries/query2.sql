@@ -26,8 +26,8 @@ total_per_month as (
 	GROUP BY month
 )
 
-SELECT 	SUM(lessons_pivoted.individual) / 12 as average_individual,
-		SUM(lessons_pivoted.group) / 12 as average_group,
-		SUM(lessons_pivoted.ensamble) / 12 as average_ensamble,
-		SUM(total) / 12 as average_total
+SELECT 	AVG(COALESCE(lessons_pivoted.individual,0)) as average_individual,
+		AVG(COALESCE(lessons_pivoted.group,0)) as average_group,
+		AVG(COALESCE(lessons_pivoted.ensamble,0)) as average_ensamble,
+		AVG(COALESCE(total,0)) as average_total
 FROM lessons_pivoted JOIN total_per_month ON lessons_pivoted.month = total_per_month.month
