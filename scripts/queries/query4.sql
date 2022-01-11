@@ -7,7 +7,7 @@ with ensambles_next_week as (
 	SELECT ensamble.music_lesson_id, target_genre, extract(dow FROM appointed_time) as dow, max
 	FROM ensamble 
 	JOIN music_lesson ON ensamble.music_lesson_id = music_lesson.music_lesson_id 
-	WHERE extract(week FROM appointed_time) = extract(week FROM now()) AND extract(year FROM appointed_time) = extract(year FROM now())
+	WHERE extract(week FROM appointed_time) = extract(week FROM now())+1 AND extract(year FROM appointed_time) = extract(year FROM now())
 ),
 student_per_lesson as (
 	SELECT COUNT(student_id), ensambles_next_week.music_lesson_id, max, target_genre, dow
