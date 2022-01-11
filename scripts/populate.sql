@@ -1276,5 +1276,22 @@ INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (129, 8);
 INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (125, 9);
 INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (128, 10);
 
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 1);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 2);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 3);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 4);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 5);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 7);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 8);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (127, 9);
+
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (121, 1);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (121, 2);
+INSERT INTO student_music_lesson (music_lesson_id, student_id) VALUES (121, 3);
+
 /*Set all lessons that are future appointments as not executed*/;
+UPDATE music_lesson
+SET executed = false
+WHERE appointed_time >= now();
+
 
