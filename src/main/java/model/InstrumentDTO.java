@@ -34,9 +34,4 @@ public class InstrumentDTO {
     public String getPrice() {
         return price;
     }
-
-    @Override
-    public String toString() {
-        return "ID: " + instrumentID + " | type: " + type + " | brand: " + brand + " | SN: " + sn + " | price: " + price;
-    }
 }

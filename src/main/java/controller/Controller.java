@@ -24,7 +24,7 @@ public class Controller {
     }
 
     /**
-     * Queries the database for a list of instruments that are available for rental.
+     * Queries the DAO for a list of instruments that are available for rental.
      * @param kind Determines what kind of instruments that are searched for.
      * @return List of DTOs from the result of the query.
      * @throws InstrumentException
@@ -38,7 +38,7 @@ public class Controller {
     }
 
     /**
-     * Asks the database to create a new rental.
+     * Queries the DAO to create a new rental.
      * @param studentID Student in the rental.
      * @param instrumentID Instrument being rented.
      * @throws RentalException
@@ -47,11 +47,16 @@ public class Controller {
         try {
             schoolDB.rentInstrumentByIDWithStudentID(studentID, instrumentID);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RentalException("Rental could not be performed.", e);
         }
     }
 
+    /**
+     * Queries the DAO for a list of rentals for a specific student.
+     * @param studentID Specified student
+     * @return List of rentals
+     * @throws RentalException
+     */
     public List<RentalDTO> getRentalsForStudent(String studentID) throws RentalException {
         try {
             return schoolDB.getRentalsByStudentID(studentID);
@@ -60,6 +65,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Queries the DAO to delete a rental.
+     * @param rentalID Specified rental.
+     * @throws RentalException
+     */
     public void terminateRentalByID(String rentalID) throws RentalException {
         try {
             schoolDB.terminateRentalByID(rentalID);
