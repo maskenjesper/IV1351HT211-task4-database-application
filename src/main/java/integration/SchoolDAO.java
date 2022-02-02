@@ -61,7 +61,7 @@ public class SchoolDAO {
             }
             connection.commit();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            handleRollback(failureMsg, sqle);
         } finally {
             closeResultSet(failureMsg, result);
         }
@@ -73,24 +73,23 @@ public class SchoolDAO {
      * @param studentID Specified student.
      * @param instrumentID Specified instrument.
      * @throws SchoolDBException
-     * @throws RentalException
      */
-    public void rentInstrumentByIDWithStudentID(String studentID, String instrumentID) throws SchoolDBException, RentalException {
+    public void rentInstrumentByIDWithStudentID(String studentID, String instrumentID) throws SchoolDBException {
         String failureMsg = "Could not rent the specified instrument.";
         ResultSet result = null;
         try {
             if(instrumentIsRented(instrumentID)){
-                throw new RentalException(studentID,instrumentID," Instrument is not available for rental");
+                handleRollback(failureMsg, new RentalException(studentID,instrumentID," Instrument is not available for rental"));
             }
             int nrOfRentals = nrOfActiveStudentRentals(studentID);
             if(nrOfRentals >= 2){
-                throw new RentalException(studentID,instrumentID, " Student has too many active rentals");
+                handleRollback(failureMsg, new RentalException(studentID,instrumentID, " Student has too many active rentals"));
             }
 
             getPriceOfInstrumentByIDStmt.setInt(1, Integer.parseInt(instrumentID));
             result = getPriceOfInstrumentByIDStmt.executeQuery();
             if(!result.next()){
-                throw new RentalException(studentID,instrumentID," Requested instrument was not found");
+                handleRollback(failureMsg, new RentalException(studentID,instrumentID," Requested instrument was not found"));
             }
 
             int price = result.getInt("price");
@@ -100,9 +99,10 @@ public class SchoolDAO {
             rentInstrumentByIdWithStudentIDStmt.executeUpdate();
             markInstrumentAsRentedByIDStmt.setInt(1, Integer.parseInt(instrumentID));
             markInstrumentAsRentedByIDStmt.executeUpdate();
+
             connection.commit();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            handleRollback(failureMsg, sqle);
         } finally {
             closeResultSet(failureMsg, result);
         }
@@ -131,7 +131,7 @@ public class SchoolDAO {
                         result.getInt("price")));
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            handleRollback(failureMsg, sqle);
         } finally {
             closeResultSet(failureMsg, result);
         }
@@ -142,9 +142,8 @@ public class SchoolDAO {
      * Queries the database to terminate a rental.
      * @param rentalID Specified rental.
      * @throws SchoolDBException
-     * @throws RentalException
      */
-    public void terminateRentalByID(String rentalID) throws SchoolDBException, RentalException {
+    public void terminateRentalByID(String rentalID) throws SchoolDBException {
         String failureMsg = "Could not terminate rental.";
         ResultSet result = null;
         try {
@@ -159,16 +158,17 @@ public class SchoolDAO {
                 unmarkInstrumentAsRentedByIDStmt.executeUpdate();
                 connection.commit();
             }
-            else
-                throw new RentalException("Rental was already terminated.");
+            else {
+                handleRollback(failureMsg, new RentalException("Rental was already terminated."));
+            }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            handleRollback(failureMsg, sqle);
         } finally {
             closeResultSet(failureMsg, result);
         }
     }
 
-    private boolean rentalIsTerminated(String rentalID) throws SchoolDBException {
+    private boolean rentalIsTerminated(String rentalID) throws SchoolDBException, SQLException {
         String failureMsg = "Could not check if rentals is terminated.";
         ResultSet result = null;
         boolean isTerminated = false;
@@ -178,15 +178,13 @@ public class SchoolDAO {
             if(result.next()){
                 isTerminated = result.getBoolean(1);
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            return isTerminated;
         } finally {
             closeResultSet(failureMsg, result);
-            return isTerminated;
         }
     }
 
-    private boolean instrumentIsRented(String instrumentID) throws SchoolDBException {
+    private boolean instrumentIsRented(String instrumentID) throws SchoolDBException, SQLException {
         String failureMsg = "Could not check if instrument is rented.";
         ResultSet result = null;
         boolean isRented = false;
@@ -196,32 +194,28 @@ public class SchoolDAO {
             if(result.next()){
                 isRented = result.getBoolean(1);
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            return isRented;
         } finally {
             closeResultSet(failureMsg, result);
-            return isRented;
         }
     }
 
-    private int nrOfActiveStudentRentals(String studentId) throws SchoolDBException {
+    private int nrOfActiveStudentRentals(String studentId) throws SchoolDBException, SQLException {
         String failureMsg = "Could not rent the specified instrument.";
         ResultSet result = null;
-        int activeRentals = 0;
+        int activeRentals;
         try {
             getNrOfActiveStudentRentalsByIDStmt.setInt(1,Integer.parseInt(studentId));
             result = getNrOfActiveStudentRentalsByIDStmt.executeQuery();
             if(result.next()){
                 activeRentals = result.getInt(1);
-
-            } else {
-                throw new StudentException("Could not find student.");
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            else {
+                throw new SQLException(failureMsg, new StudentException("Could not find student."));
+            }
+            return activeRentals;
         } finally {
             closeResultSet(failureMsg, result);
-            return activeRentals;
         }
     }
 
@@ -295,5 +289,18 @@ public class SchoolDAO {
         } catch (Exception e) {
             throw new SchoolDBException(failureMsg + " Could not close result set.", e);
         }
+    }
+
+    private void handleRollback(String failureMsg, Exception cause) throws SchoolDBException {
+        try {
+            connection.rollback();
+        } catch (SQLException exc) {
+            failureMsg = failureMsg + ". Rollback failed: " + exc.getMessage();
+        }
+
+        if (cause != null)
+            throw new SchoolDBException(failureMsg, cause);
+        else
+            throw new SchoolDBException(failureMsg);
     }
 }
